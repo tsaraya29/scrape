@@ -1,0 +1,36 @@
+
+body, html {
+  height: 100%;
+  margin: 0;
+  font-size: 18px;
+}
+
+.bg {
+  /* The image used */
+  background-image:url("../images/o-washington-post-facebook.jpg");
+
+  /* Full height */
+  height: 50%; 
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  
+}
+#overlay {
+    position: fixed;
+    height:25%;
+    top: 70px;
+    left: 0;
+    right: 0;
+    bottom: 100px;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 2;
+    cursor: pointer;
+  }
+  
+  .content {
+      color: #f1f1f1;
+      padding: 20px;
+  }

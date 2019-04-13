@@ -24,11 +24,14 @@ console.log("\n***********************************\n" +
          $("div.headline").each(function(i, element) {
             var headline = $(element).text();
             // find child elements of headline div
-            var link = $(element).children("a").attr('href');
-            // console.log(link);
+            var link = $(element).children('a').attr('href');
+            // console.log(response.data);
+            var summary = $(element).children('div').find('blurb').text();
+        
             results.push({
                 headline: headline,
-                link: link
+                link: link,
+                summary: summary
             });            
         });
         console.log(results);
