@@ -7,7 +7,7 @@ body, html {
 
 .bg {
   /* The image used */
-  background-image:url("../images/o-washington-post-facebook.jpg");
+  background-image: url("../images/WP.jpg");
 
   /* Full height */
   height: 50%; 
@@ -33,4 +33,8 @@ body, html {
   .content {
       color: #f1f1f1;
       padding: 20px;
+  }
+
+  h1 {
+    color: blue;
   }
