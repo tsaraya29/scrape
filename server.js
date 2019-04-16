@@ -1,5 +1,5 @@
 //Require necessary packages
-
+const mongojs = require("mongojs");
 const axios = require('axios');
 const cheerio = require('cheerio');
 const express = require("express");
@@ -8,6 +8,16 @@ const exphbs  = require('express-handlebars');
 
 
 const app = express();
+
+// Database configuration
+var databaseUrl = "WaPo";
+var collections = ["scrapedData"];
+
+// Hook mongojs configuration to the db variable
+var db = mongojs(databaseUrl, collections);
+db.on("error", function(error) {
+  console.log("Database Error:", error);
+});
 
 //allows heroku to set port
 const PORT = process.env.PORT || 3000;
@@ -24,13 +34,21 @@ app.get('/', function (req, res) {
     res.render('home');
 }); 
 
-//test console
+//Retrieve data from the db
 
-console.log("\n***********************************\n" +
-            "Getting data from Washington Post News web site\n" +            
-            "\n***********************************\n")
-
-//use axios to return data
+app.get("/all", function(req,res){
+    //Find all results in ScrapedDB
+    db.scrapedData.find({}, function(error,found) {
+        if(error){
+            console.log(error);
+        }
+        else {
+            res.json(found);
+        }
+    });
+});
+// Scrape data from one site and place it into the mongodb db
+app.get("/scrape", function(req, res) {
     const url = 'https://www.washingtonpost.com/';
 
     axios.get(url)
@@ -42,24 +60,39 @@ console.log("\n***********************************\n" +
             var results = [];
          //use cheerio to find headlines
 
-         $("div.headline").each(function(i, element) {
-            var headline = $(element).text();
-            // find child elements of headline div
-            var link = $(element).children('a').attr('href');
-            // console.log(response.data);
-            var summary = $(element).children('div').find('headline').text();
-        
-            results.push({
-                headline: headline,
-                link: link,
-                summary: summary
+    $("div.headline").each(function(i, element) {
+    var headline = $(element).text();
+    // find child elements of headline div
+    var link = $(element).children('a').attr('href');
+    // console.log(response.data);
+    var summary = $(element).children('div').find('headline').text();
+
+    if (link && headline) {
+        db.scrapedData.insert({
+            headline:headline,
+            link: link                
+        },
+    function(err, inserted) {
+        if (err) {
+            // Log the error if one is encountered during the query
+            console.log(err);
+        }
+        else {
+            // Otherwise, log the inserted data
+            console.log(inserted);
+        }
+    });
+    }        
+            // results.push({
+            //     headline: headline,
+            //     link: link,
+            //     summary: summary
             });            
         });
-        console.log(results);
+        // console.log(results);
+        res.send("Scrape Complete"); 
     });
-        // .catch(error => {
-        // console.log(error);
-        // })
+     
 
 
 //Listener
